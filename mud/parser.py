@@ -39,6 +39,9 @@ LOOK_COMMANDS = {"look", "l", "看", "查看", "观察"}
 MAP_COMMANDS = {"map", "m", "地图"}
 HELP_COMMANDS = {"help", "h", "?", "帮助"}
 QUIT_COMMANDS = {"quit", "q", "exit", "退出"}
+TALK_COMMANDS = {"talk", "t", "对话", "交谈"}
+INVESTIGATE_COMMANDS = {"investigate", "inv", "调查", "搜查"}
+QUEST_COMMANDS = {"quest", "任务", "进度"}
 
 
 def parse_direction(raw: str) -> tuple[int, int] | None:
@@ -48,38 +51,31 @@ def parse_direction(raw: str) -> tuple[int, int] | None:
 
 
 def parse_command(raw: str) -> dict:
-    """
-    解析玩家输入，返回标准化指令字典。
-
-    返回格式：
-    {
-        "type": "move" | "look" | "map" | "help" | "quit" | "unknown",
-        "data": 相关数据
-    }
-    """
+    """玩家指令识别与回应"""
     cleaned = raw.strip()
     lowered = cleaned.lower()
 
-    # 1. 移动指令
+    if lowered == "talk" or lowered == "t" or lowered in TALK_COMMANDS:
+        return {"type": "talk", "data": None}
+    if lowered.startswith("talk ") or lowered.startswith("t "):
+        parts = cleaned.split(maxsplit=1)
+        target = parts[1].strip() if len(parts) > 1 else None
+        return {"type": "talk", "data": target}
+
     direction = parse_direction(cleaned)
     if direction is not None:
         return {"type": "move", "data": direction}
 
-    # 2. 查看
+    if lowered in INVESTIGATE_COMMANDS:
+        return {"type": "investigate", "data": None}
+
     if lowered in LOOK_COMMANDS:
         return {"type": "look", "data": None}
-
-    # 3. 地图
     if lowered in MAP_COMMANDS:
         return {"type": "map", "data": None}
-
-    # 4. 帮助
     if lowered in HELP_COMMANDS:
         return {"type": "help", "data": None}
-
-    # 5. 退出
     if lowered in QUIT_COMMANDS:
         return {"type": "quit", "data": None}
 
-    # 6. 未识别
     return {"type": "unknown", "data": cleaned}

@@ -5,6 +5,7 @@
 """
 
 from city.grid import CityGrid
+from .events import EventStage
 
 
 # ── 颜色映射（只存背景色码） ──
@@ -81,7 +82,7 @@ def render_legend() -> str:
     return "  ".join(items)
 
 
-def render_location_detail(grid: CityGrid, x: int, y: int) -> str:
+def render_location_detail(grid: CityGrid, x: int, y: int, event_manager=None) -> str:
     """渲染当前位置详情"""
     cell = grid.get_cell(x, y)
     if cell is None or cell.tile is None:
@@ -94,8 +95,32 @@ def render_location_detail(grid: CityGrid, x: int, y: int) -> str:
     lines.append("")
     lines.append("=" * 40)
     lines.append(f"[ {label} ]")
+    if cell.landmark:
+        lines.append(f"📍 {cell.landmark}")
     lines.append("=" * 40)
     lines.append(tile.description)
+
+    # NPC 列表
+    if cell.npcs:
+        lines.append("")
+        lines.append("You see here:")
+        for npc in cell.npcs:
+            lines.append(f"  • {npc['name']} — {npc['trait']}的{npc['profession']}")
+    
+        # 事件提示
+    if cell.has_event_npc:
+        if event_manager and event_manager.stage.value < 4:
+            lines.append("")
+            if event_manager.stage.value == 0:
+                lines.append("A mysterious stranger watches you from the shadows.")
+            elif event_manager.stage.value == 1:
+                lines.append(f"{event_manager.npc_name} is waiting for you to return.")
+            lines.append("Type 'talk' to speak.")
+
+    if cell.clue_target and event_manager and event_manager.stage == EventStage.CLUE_SEARCHING:
+        lines.append("")
+        lines.append("Something hidden catches your eye...")
+        lines.append("Type 'investigate' to search.")
 
     # 周围
     neighbors = grid.get_neighbors(x, y)
@@ -105,7 +130,10 @@ def render_location_detail(grid: CityGrid, x: int, y: int) -> str:
     for d, n in zip(directions, neighbors):
         if n and n.tile:
             n_label = TYPE_LABELS.get(n.tile.type_id, "Unknown")
-            lines.append(f"  {d}: {n_label}")
+            n_detail = n_label
+            if n.landmark:
+                n_detail += f" ({n.landmark})"
+            lines.append(f"  {d}: {n_detail}")
         else:
             lines.append(f"  {d}: Void")
 

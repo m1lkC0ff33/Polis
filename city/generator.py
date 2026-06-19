@@ -13,6 +13,7 @@ from city.tiles import (
 )
 from city.grid import CityGrid, Cell
 from city.constraints import ALL_RULES
+from data.names import assign_names_to_city
 
 
 #柏林噪声
@@ -73,7 +74,7 @@ def generate_city(size: int = 10, seed: int | None = None) -> CityGrid:
             print(f"[生成器] 第 {iteration+1} 轮修正：无违规，完成")
             break
         print(f"[生成器] 第 {iteration+1} 轮修正：修复 {violations} 处违规")
-
+    assign_names_to_city(grid, rng)
     return grid
 
 

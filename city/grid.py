@@ -13,6 +13,9 @@ class Cell:
         self.tile: TileType | None = None
         self.landmark: str = ""
         self.description: str = ""
+        self.npcs: list[dict] = []
+        self.has_event_npc: bool    = False
+        self.clue_target: bool = False
 
     def __repr__(self):
         if self.tile is None:
