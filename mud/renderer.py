@@ -13,7 +13,7 @@ COLOR_MAP = {
     "commercial":  "43",   # 黄底
     "government":  "47",   # 白底
     "industrial":  "100",  # 灰底
-    "park":        "42",   # 绿底
+    "park":        "46",   # 绿底
     "water":       "44",   # 蓝底
 }
 

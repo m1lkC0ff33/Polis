@@ -54,6 +54,22 @@ def rule_water_connectivity(cell, neighbors):
         return False, "水域需要至少两个相邻水域格（避免孤池）"
     return True, ""
 
+def rule_park_needs_purpose(cell, neighbors):
+    """公园需要紧邻居住区，或作为工业-居住缓冲带"""
+    if cell.tile is not PARK:
+        return True, ""
+    
+    has_residential = any(n.tile is RESIDENTIAL for n in neighbors)
+    # 作为缓冲带：同时挨着工业和居住
+    has_industrial = any(n.tile is INDUSTRIAL for n in neighbors)
+    is_buffer = has_residential and has_industrial
+    
+    if has_residential or is_buffer:
+        return True, ""
+    
+    return False, ""
+
+
 
 # 所有规则汇总
 ALL_RULES = [
@@ -61,4 +77,5 @@ ALL_RULES = [
     rule_industry_not_next_to_residential,
     rule_government_surrounded,
     rule_water_connectivity,
+    rule_park_needs_purpose
 ]
