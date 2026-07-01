@@ -1,2 +1,26 @@
-# Polis
-Experimental Game Demo — A city-generation prototype that procedurally constructs urban environments and leverages LLM-based techniques to dynamically generate diverse, non-repetitive in-game events.
+# Polis —— 程序化城市叙事引擎
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+一个实验性项目：**用柏林噪声生成城市骨架，用约束规则保证街区逻辑，用状态机驱动事件链，最终接入LLM填充叙事。** 10×10规模的技术演示。
+
+---
+
+## 🎯 核心想法
+
+游戏界能随机生成自然地貌（柏林噪声），但随机生成**有逻辑的城市** + **有叙事深度的事件**仍是一片空白。
+
+Polis尝试回答：如果一个程序化城市里的每个街区都有名字、有NPC、有正在发生的故事——而且这些故事会因为玩家的行为而产生逻辑自洽的变化——它应该长什么样？
+
+---
+
+## 🧱 已实现
+
+- **柏林噪声 + 约束求解**：6种街区类型，5条城市规划规则，多轮修正保证逻辑自洽
+- **名字库**：100+地标名、中英文NPC姓名、20种性格词——随机但不重复
+- **多任务系统**：2-3个独立任务散布在城市中，各自有NPC和线索位置
+- **事件链状态机**：IDLE → ACCEPTED → CLUE_SEARCHING → CLUE_FOUND → RESOLVED
+- **对话库**：普通NPC根据事件进度自动切换台词，引导玩家找到任务NPC
+- **终端彩色渲染**：ANSI转义码 + Unicode框线，纯文字MUD体验
+
+---

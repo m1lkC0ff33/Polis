@@ -68,6 +68,9 @@ def parse_command(raw: str) -> dict:
 
     if lowered in INVESTIGATE_COMMANDS:
         return {"type": "investigate", "data": None}
+    
+    if lowered in QUEST_COMMANDS:
+        return {"type": "quest", "data": None}
 
     if lowered in LOOK_COMMANDS:
         return {"type": "look", "data": None}
